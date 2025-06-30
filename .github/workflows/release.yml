@@ -30,6 +30,7 @@ jobs:
     - name: Build Windows executable
       run: |
         pyinstaller --onefile --name sans --add-data "sanskrit_lang;sanskrit_lang" --add-data "examples;examples" cli.py
+        copy dist\sans.exe .
         
     - name: Create Windows installer script
       run: |
@@ -100,7 +101,7 @@ jobs:
       with:
         name: windows-build
         path: |
-          dist/sans.exe
+          dist/
           install.bat
 
   build-macos:
@@ -152,7 +153,7 @@ jobs:
       with:
         name: macos-build
         path: |
-          dist/sans
+          dist/
           install.sh
 
   build-linux:
@@ -215,7 +216,7 @@ jobs:
       with:
         name: linux-build
         path: |
-          dist/sans
+          dist/
           install.sh
           uninstall.sh
 
@@ -319,18 +320,28 @@ jobs:
         ls -la
         find . -name "*.exe" -o -name "*.sh" -o -name "sans" | head -20
         
-        # Upload Windows assets
-        gh release upload "${TAG_NAME}" \
-          windows-build/sans.exe#sans-windows.exe \
-          windows-build/install.bat#windows-install.bat
+        # Upload Windows assets (check if files exist first)
+        if [ -f "windows-build/dist/sans.exe" ]; then
+          gh release upload "${TAG_NAME}" windows-build/dist/sans.exe#sans-windows.exe
+        else
+          echo "Windows executable not found"
+          exit 1
+        fi
+        
+        if [ -f "windows-build/install.bat" ]; then
+          gh release upload "${TAG_NAME}" windows-build/install.bat#windows-install.bat
+        else
+          echo "Windows installer not found"
+          exit 1
+        fi
         
         # Upload macOS assets  
         gh release upload "${TAG_NAME}" \
-          macos-build/sans#sans-macos \
+          macos-build/dist/sans#sans-macos \
           macos-build/install.sh#macos-install.sh
         
         # Upload Linux assets
         gh release upload "${TAG_NAME}" \
-          linux-build/sans#sans-linux \
+          linux-build/dist/sans#sans-linux \
           linux-build/install.sh#linux-install.sh \
           linux-build/uninstall.sh#linux-uninstall.sh
