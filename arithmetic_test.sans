@@ -1,0 +1,9 @@
+# Test arithmetic with Devanagari numerals
+धारणा a = १
+धारणा b = २
+धारणा sum = a + b
+मुद्रण("१ + २ =", sum)
+
+धारणा c = १
+c = c + १
+मुद्रण("After increment:", c)

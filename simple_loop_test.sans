@@ -1,0 +1,12 @@
+# Simple loop test with ASCII numerals
+मुद्रण("Loop test starting...")
+धारणा i = 1
+मुद्रण("Initial i:", i)
+
+यावत् i <= 3 {
+    मुद्रण("i is:", i)
+    i = i + 1
+    मुद्रण("After increment i:", i)
+}
+
+मुद्रण("Loop completed")
