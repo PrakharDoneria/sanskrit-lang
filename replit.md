@@ -101,6 +101,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+✅ **Release Infrastructure and CLI Tool (June 30, 2025)**
+- Created comprehensive GitHub workflow for automated releases on Windows, macOS, and Linux
+- Built CLI tool (`cli.py`) that provides `sans` command for running programs
+- Added automatic executable building with PyInstaller for cross-platform distribution
+- Created installation scripts for Windows (.bat), macOS, and Linux that add PATH automatically
+- Integrated VS Code support with tasks, settings, and file associations for `.sans` files
+- Added comprehensive installation guide (INSTALL.md) with platform-specific instructions
+- Users can now install Sanskrit language system-wide and use `sans program.sans` from any terminal
+
 ✅ **Bug Fix - Variable Assignment in Loops (June 30, 2025)**
 - Fixed critical scoping issue where variable assignments inside loop bodies weren't persisting
 - Modified Environment.assign() method to create variables in current scope if not found in any parent scope
@@ -117,5 +126,6 @@ Preferred communication style: Simple, everyday language.
 
 ## Changelog
 
+- June 30, 2025: Release infrastructure and CLI tool - GitHub workflow, executables, installers, VS Code integration
 - June 30, 2025: Critical bug fix - variable assignment scoping in loops resolved
 - June 30, 2025: Initial setup and complete language implementation

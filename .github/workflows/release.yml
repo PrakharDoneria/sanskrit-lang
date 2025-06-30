@@ -1,0 +1,377 @@
+name: Build and Release Sanskrit Language
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+    
+    - name: Build Windows executable
+      run: |
+        pyinstaller --onefile --name sans --add-data "sanskrit_lang;sanskrit_lang" --add-data "examples;examples" cli.py
+        
+    - name: Create Windows installer script
+      run: |
+        # Create NSIS installer script
+        @"
+        !define APPNAME "Sanskrit Programming Language"
+        !define COMPANYNAME "Sanskrit Lang"
+        !define DESCRIPTION "Sanskrit-inspired programming language"
+        !define VERSIONMAJOR 1
+        !define VERSIONMINOR 0
+        !define VERSIONBUILD 0
+        
+        RequestExecutionLevel admin
+        
+        InstallDir `$PROGRAMFILES64\SanskritLang`
+        
+        Page directory
+        Page instfiles
+        
+        Section "install"
+            SetOutPath `$INSTDIR`
+            File "dist\sans.exe"
+            
+            # Add to PATH
+            nsExec::ExecToLog 'setx PATH "`$INSTDIR;%PATH%" /M'
+            
+            # Create uninstaller
+            WriteUninstaller "`$INSTDIR\uninstall.exe"
+            
+            # Registry info for add/remove programs
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SanskritLang" "DisplayName" "Sanskrit Programming Language"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SanskritLang" "UninstallString" "`$INSTDIR\uninstall.exe"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SanskritLang" "DisplayVersion" "1.0.0"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SanskritLang" "Publisher" "Sanskrit Lang"
+        SectionEnd
+        
+        Section "Uninstall"
+            Delete "`$INSTDIR\sans.exe"
+            Delete "`$INSTDIR\uninstall.exe"
+            RMDir "`$INSTDIR"
+            
+            DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SanskritLang"
+        SectionEnd
+        "@ | Out-File -FilePath "installer.nsi" -Encoding UTF8
+    
+    - name: Create simple batch installer
+      run: |
+        @"
+        @echo off
+        echo Installing Sanskrit Programming Language...
+        
+        set INSTALL_DIR=%ProgramFiles%\SanskritLang
+        mkdir "%INSTALL_DIR%" 2>nul
+        
+        copy sans.exe "%INSTALL_DIR%\sans.exe"
+        
+        echo Adding to PATH...
+        setx PATH "%INSTALL_DIR%;%PATH%" /M
+        
+        echo Sanskrit Programming Language installed successfully!
+        echo You can now use 'sans' command from anywhere.
+        echo Please restart your command prompt or terminal.
+        pause
+        "@ | Out-File -FilePath "install.bat" -Encoding ASCII
+    
+    - name: Upload Windows artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-build
+        path: |
+          dist/sans.exe
+          install.bat
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+    
+    - name: Build macOS executable
+      run: |
+        pyinstaller --onefile --name sans --add-data "sanskrit_lang:sanskrit_lang" --add-data "examples:examples" cli.py
+        
+    - name: Create macOS installer
+      run: |
+        cat > install.sh << 'EOF'
+        #!/bin/bash
+        echo "Installing Sanskrit Programming Language..."
+        
+        # Create installation directory
+        INSTALL_DIR="/usr/local/bin"
+        
+        # Copy executable
+        sudo cp sans "$INSTALL_DIR/"
+        sudo chmod +x "$INSTALL_DIR/sans"
+        
+        echo "Sanskrit Programming Language installed successfully!"
+        echo "You can now use 'sans' command from anywhere."
+        echo ""
+        echo "Usage:"
+        echo "  sans program.sans    # Run a Sanskrit program"
+        echo "  sans --repl          # Start interactive REPL"
+        echo "  sans --editor        # Launch GUI editor"
+        echo "  sans --help          # Show help"
+        echo "  sans --version       # Show version"
+        EOF
+        chmod +x install.sh
+    
+    - name: Upload macOS artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: macos-build
+        path: |
+          dist/sans
+          install.sh
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+    
+    - name: Build Linux executable
+      run: |
+        pyinstaller --onefile --name sans --add-data "sanskrit_lang:sanskrit_lang" --add-data "examples:examples" cli.py
+    
+    - name: Create Linux installer
+      run: |
+        cat > install.sh << 'EOF'
+        #!/bin/bash
+        set -e
+        
+        echo "Installing Sanskrit Programming Language..."
+        
+        # Create installation directory
+        INSTALL_DIR="/usr/local/bin"
+        
+        # Copy executable
+        sudo cp sans "$INSTALL_DIR/"
+        sudo chmod +x "$INSTALL_DIR/sans"
+        
+        echo "Sanskrit Programming Language installed successfully!"
+        echo "You can now use 'sans' command from anywhere."
+        echo ""
+        echo "Usage:"
+        echo "  sans program.sans    # Run a Sanskrit program"
+        echo "  sans --repl          # Start interactive REPL"
+        echo "  sans --editor        # Launch GUI editor"
+        echo "  sans --help          # Show help"
+        echo "  sans --version       # Show version"
+        EOF
+        chmod +x install.sh
+        
+        # Create uninstaller
+        cat > uninstall.sh << 'EOF'
+        #!/bin/bash
+        echo "Uninstalling Sanskrit Programming Language..."
+        sudo rm -f /usr/local/bin/sans
+        echo "Sanskrit Programming Language uninstalled."
+        EOF
+        chmod +x uninstall.sh
+    
+    - name: Upload Linux artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: linux-build
+        path: |
+          dist/sans
+          install.sh
+          uninstall.sh
+
+  create-release:
+    needs: [build-windows, build-macos, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+    
+    - name: Create release notes
+      run: |
+        cat > RELEASE_NOTES.md << 'EOF'
+        # Sanskrit Programming Language Release
+        
+        A complete Sanskrit-inspired programming language with modern capabilities.
+        
+        ## Features
+        - Sanskrit keywords and Devanagari script support
+        - Interactive REPL with command history
+        - Built-in GUI editor with syntax highlighting
+        - Standard library modules (Math, String, I/O)
+        - Cross-platform support (Windows, macOS, Linux)
+        
+        ## Installation Options
+        
+        ### Windows
+        - Download `sans.exe` and `install.bat`
+        - Run `install.bat` as Administrator to install and add to PATH
+        - Or manually place `sans.exe` in your preferred directory and add to PATH
+        
+        ### macOS / Linux
+        - Download `sans` binary and `install.sh`
+        - Run `sudo ./install.sh` to install system-wide
+        - Or manually place `sans` in `/usr/local/bin/`
+        
+        ## Usage
+        
+        After installation, you can use the `sans` command:
+        
+        ```bash
+        sans program.sans    # Run a Sanskrit program
+        sans --repl          # Start interactive REPL
+        sans --editor        # Launch GUI editor
+        sans --help          # Show help
+        sans --version       # Show version
+        ```
+        
+        ## VS Code Integration
+        
+        After installing and adding to PATH, you can run Sanskrit programs directly in VS Code terminal:
+        - Create a `.sans` file with Sanskrit code
+        - Open terminal in VS Code (Ctrl+` or Cmd+`)
+        - Run `sans yourfile.sans`
+        
+        ## Examples
+        
+        Example Sanskrit program (`hello.sans`):
+        ```sanskrit
+        # नमस्ते संसार!
+        मुद्रण("नमस्ते संसार!")
+        
+        धारणा नाम = "राम"
+        मुद्रण("नमस्कार", नाम)
+        
+        # गिनती
+        धारणा i = १
+        यावत् i <= ५ {
+            मुद्रण(i)
+            i = i + १
+        }
+        ```
+        
+        Run with: `sans hello.sans`
+        EOF
+    
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.event.inputs.version || github.ref_name }}
+        release_name: Sanskrit Programming Language ${{ github.event.inputs.version || github.ref_name }}
+        body_path: RELEASE_NOTES.md
+        draft: false
+        prerelease: false
+      id: create_release
+    
+    - name: Upload Windows Executable
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: windows-build/sans.exe
+        asset_name: sans-windows.exe
+        asset_content_type: application/octet-stream
+    
+    - name: Upload Windows Installer
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: windows-build/install.bat
+        asset_name: windows-install.bat
+        asset_content_type: text/plain
+    
+    - name: Upload macOS Binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: macos-build/sans
+        asset_name: sans-macos
+        asset_content_type: application/octet-stream
+    
+    - name: Upload macOS Installer
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: macos-build/install.sh
+        asset_name: macos-install.sh
+        asset_content_type: text/plain
+    
+    - name: Upload Linux Binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: linux-build/sans
+        asset_name: sans-linux
+        asset_content_type: application/octet-stream
+    
+    - name: Upload Linux Installer
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: linux-build/install.sh
+        asset_name: linux-install.sh
+        asset_content_type: text/plain
+    
+    - name: Upload Linux Uninstaller
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: linux-build/uninstall.sh
+        asset_name: linux-uninstall.sh
+        asset_content_type: text/plain
