@@ -1,0 +1,81 @@
+Run actions/download-artifact@v4
+Found 3 artifact(s)
+No input name, artifact-ids or pattern filtered specified, downloading all artifacts
+An extra directory with the artifact name will be created for each download
+Preparing to download the following artifacts:
+- windows-build (ID: 3430527353, Size: 10979941, Expected Digest: sha256:f26e48b1d92bb298d7c74eed414b717c9aed69e2995fdba9d939d7dc9ff41436)
+- linux-build (ID: 3430524009, Size: 20761939, Expected Digest: sha256:969677dcaaeca52f0c56186bfc059d1fe495e2e993679617d4c7ed4b3a999b82)
+- macos-build (ID: 3430519990, Size: 9591719, Expected Digest: sha256:b255a71e7ba5295f5bc5aea55f5ec1dd72fb379849f22ef3d85e0b5877888e1e)
+Redirecting to blob download url: https://productionresultssa15.blob.core.windows.net/actions-results/f2bfad5b-7548-44ce-9ec3-e07cc8bc9117/workflow-job-run-61f7cc35-58ac-5101-935f-09f2ce240354/artifacts/1a017df141b540eba5d389b6357fabe7eb4af7d2f77027d82e5892e65068918d.zip
+Starting download of artifact to: /home/runner/work/sanskrit-lang/sanskrit-lang/windows-build
+Redirecting to blob download url: https://productionresultssa15.blob.core.windows.net/actions-results/f2bfad5b-7548-44ce-9ec3-e07cc8bc9117/workflow-job-run-b8999d81-f466-549e-85b9-73ec25145cad/artifacts/58497a29f5a9c43b80a15991446403814ed38e3f3c54e0bbd4869229d7ad11d6.zip
+Starting download of artifact to: /home/runner/work/sanskrit-lang/sanskrit-lang/linux-build
+Redirecting to blob download url: https://productionresultssa15.blob.core.windows.net/actions-results/f2bfad5b-7548-44ce-9ec3-e07cc8bc9117/workflow-job-run-7fe79209-d971-50d9-b10f-52f275cb099d/artifacts/c1dae70e5350ac942c42ecb111eeb32200c91ed1ea9018aa2f897f5eb6736dd1.zip
+Starting download of artifact to: /home/runner/work/sanskrit-lang/sanskrit-lang/macos-build
+(node:1948) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+SHA256 digest of downloaded artifact is f26e48b1d92bb298d7c74eed414b717c9aed69e2995fdba9d939d7dc9ff41436
+Artifact download completed successfully.
+SHA256 digest of downloaded artifact is b255a71e7ba5295f5bc5aea55f5ec1dd72fb379849f22ef3d85e0b5877888e1e
+Artifact download completed successfully.
+SHA256 digest of downloaded artifact is 969677dcaaeca52f0c56186bfc059d1fe495e2e993679617d4c7ed4b3a999b82
+Artifact download completed successfully.
+Total of 3 artifact(s) downloaded
+Download artifact has finished successfully
+0s
+Run cat > RELEASE_NOTES.md << 'EOF'
+  
+6s
+Run # Set release tag and name
+  
+https://github.com/PrakharDoneria/sanskrit-lang/releases/tag/v1.0.2
+total 132
+drwxr-xr-x 11 runner docker  4096 Jun 30 09:21 .
+drwxr-xr-x  3 runner docker  4096 Jun 30 09:21 ..
+drwxr-xr-x  7 runner docker  4096 Jun 30 09:21 .git
+drwxr-xr-x  3 runner docker  4096 Jun 30 09:21 .github
+-rw-r--r--  1 runner docker   407 Jun 30 09:21 .replit
+drwxr-xr-x  2 runner docker  4096 Jun 30 09:21 .vscode
+-rw-r--r--  1 runner docker  5761 Jun 30 09:21 INSTALL.md
+-rw-r--r--  1 runner docker  7632 Jun 30 09:21 README.md
+-rw-r--r--  1 runner docker  1659 Jun 30 09:21 RELEASE_NOTES.md
+-rw-r--r--  1 runner docker  3014 Jun 30 09:21 RELEASE_STATUS.md
+-rw-r--r--  1 runner docker   236 Jun 30 09:21 arithmetic_test.sans
+drwxr-xr-x  3 runner docker  4096 Jun 30 09:21 build
+-rw-r--r--  1 runner docker  5791 Jun 30 09:21 cli.py
+-rw-r--r--  1 runner docker   668 Jun 30 09:21 debug_simple.py
+-rw-r--r--  1 runner docker   118 Jun 30 09:21 debug_test.sans
+drwxr-xr-x  2 runner docker  4096 Jun 30 09:21 examples
+drwxr-xr-x  3 runner docker  4096 Jun 30 09:21 linux-build
+drwxr-xr-x  3 runner docker  4096 Jun 30 09:21 macos-build
+-rw-r--r--  1 runner docker  1531 Jun 30 09:21 main.py
+-rw-r--r--  1 runner docker   192 Jun 30 09:21 pyproject.toml
+-rw-r--r--  1 runner docker  5960 Jun 30 09:21 replit.md
+-rw-r--r--  1 runner docker   655 Jun 30 09:21 sans.spec
+drwxr-xr-x  3 runner docker  4096 Jun 30 09:21 sanskrit_lang
+-rw-r--r--  1 runner docker   303 Jun 30 09:21 simple_loop_test.sans
+-rw-r--r--  1 runner docker   456 Jun 30 09:21 test_sanskrit.sans
+-rw-r--r--  1 runner docker 10874 Jun 30 09:21 uv.lock
+drwxr-xr-x  3 runner docker  4096 Jun 30 09:21 windows-build
+./windows-build/dist/sans.exe
+./linux-build/uninstall.sh
+./linux-build/install.sh
+./linux-build/dist/sans
+./build/sans
+./macos-build/install.sh
+./macos-build/dist/sans
+asset under the same name already exists: [sans install.sh]
+Error: Process completed with exit code 1.
+0s
+Post job cleanup.
+/usr/bin/git version
+git version 2.49.0
+Temporarily overriding HOME='/home/runner/work/_temp/4b67046c-f041-4acf-ae59-0ed2afe37646' before making global git config changes
+Adding repository directory to the temporary git global config as a safe directory
+/usr/bin/git config --global --add safe.directory /home/runner/work/sanskrit-lang/sanskrit-lang
+/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+http.https://github.com/.extraheader
+/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"

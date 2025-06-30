@@ -310,6 +310,9 @@ jobs:
         fi
         RELEASE_NAME="Sanskrit Programming Language ${TAG_NAME}"
         
+        # Delete existing release if it exists
+        gh release delete "${TAG_NAME}" --yes || echo "Release ${TAG_NAME} did not exist"
+        
         # Create release
         gh release create "${TAG_NAME}" \
           --title "${RELEASE_NAME}" \
@@ -322,26 +325,52 @@ jobs:
         
         # Upload Windows assets (check if files exist first)
         if [ -f "windows-build/dist/sans.exe" ]; then
-          gh release upload "${TAG_NAME}" windows-build/dist/sans.exe#sans-windows.exe
+          gh release upload "${TAG_NAME}" windows-build/dist/sans.exe#sans-windows.exe --clobber
         else
           echo "Windows executable not found"
           exit 1
         fi
         
         if [ -f "windows-build/install.bat" ]; then
-          gh release upload "${TAG_NAME}" windows-build/install.bat#windows-install.bat
+          gh release upload "${TAG_NAME}" windows-build/install.bat#windows-install.bat --clobber
         else
           echo "Windows installer not found"
           exit 1
         fi
         
         # Upload macOS assets  
-        gh release upload "${TAG_NAME}" \
-          macos-build/dist/sans#sans-macos \
-          macos-build/install.sh#macos-install.sh
+        if [ -f "macos-build/dist/sans" ]; then
+          gh release upload "${TAG_NAME}" macos-build/dist/sans#sans-macos --clobber
+        else
+          echo "macOS executable not found"
+          exit 1
+        fi
+        
+        if [ -f "macos-build/install.sh" ]; then
+          gh release upload "${TAG_NAME}" macos-build/install.sh#macos-install.sh --clobber
+        else
+          echo "macOS installer not found"
+          exit 1
+        fi
         
         # Upload Linux assets
-        gh release upload "${TAG_NAME}" \
-          linux-build/dist/sans#sans-linux \
-          linux-build/install.sh#linux-install.sh \
-          linux-build/uninstall.sh#linux-uninstall.sh
+        if [ -f "linux-build/dist/sans" ]; then
+          gh release upload "${TAG_NAME}" linux-build/dist/sans#sans-linux --clobber
+        else
+          echo "Linux executable not found"
+          exit 1
+        fi
+        
+        if [ -f "linux-build/install.sh" ]; then
+          gh release upload "${TAG_NAME}" linux-build/install.sh#linux-install.sh --clobber
+        else
+          echo "Linux installer not found"
+          exit 1
+        fi
+        
+        if [ -f "linux-build/uninstall.sh" ]; then
+          gh release upload "${TAG_NAME}" linux-build/uninstall.sh#linux-uninstall.sh --clobber
+        else
+          echo "Linux uninstaller not found"
+          exit 1
+        fi
