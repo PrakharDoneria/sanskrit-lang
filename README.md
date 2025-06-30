@@ -36,7 +36,7 @@ Sanskrit Programming Language is a modern programming language that draws inspir
 
 ### Quick Install
 ```bash
-git clone https://github.com/yourusername/sanskrit-lang.git
+git clone https://github.com/prakhardoneria/sanskrit-lang.git
 cd sanskrit-lang
 python main.py --help
 ```
