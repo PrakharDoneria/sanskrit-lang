@@ -5,7 +5,7 @@
 ### Windows
 
 #### Option 1: Automated Installation (Recommended)
-1. Download `sans-windows.exe` and `windows-install.bat` from the [latest release](https://github.com/yourusername/sanskrit-lang/releases)
+1. Download `sans-windows.exe` and `windows-install.bat` from the [latest release](https://github.com/PrakharDoneria/sanskrit-lang/releases)
 2. Place both files in the same folder
 3. Right-click on `windows-install.bat` and select "Run as administrator"
 4. The installer will:
@@ -201,7 +201,7 @@ If you want to build from source instead of using releases:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/sanskrit-lang.git
+   git clone https://github.com/PrakharDoneria/sanskrit-lang.git
    cd sanskrit-lang
    ```
 
@@ -221,5 +221,5 @@ If you want to build from source instead of using releases:
 
 - Use `sans --help` for command-line help
 - Start REPL and type `सहायता` for interactive help
-- Check the [GitHub repository](https://github.com/yourusername/sanskrit-lang) for documentation and examples
+- Check the [GitHub repository](https://github.com/PrakharDoneria/sanskrit-lang) for documentation and examples
 - Report issues on the GitHub issue tracker

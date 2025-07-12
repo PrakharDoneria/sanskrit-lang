@@ -1,0 +1,25 @@
+{
+  "name": "sanskrit-lang",
+  "displayName": "sanskrit-lang",
+  "description": "Sanskrit Programming Language support with syntax highlighting and file icons",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "sanskrit",
+      "aliases": ["Sanskrit", "sanskrit"],
+      "extensions": [".sans"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "sanskrit",
+      "scopeName": "source.sanskrit",
+      "path": "./syntaxes/sanskrit.tmLanguage.json"
+    }]
+  }
+}

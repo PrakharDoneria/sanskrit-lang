@@ -67,7 +67,7 @@ Example Program:
   }}
 
 For more information and examples, visit:
-https://github.com/yourusername/sanskrit-lang
+https://github.com/PrakharDoneria/sanskrit-lang
 
 """.format(version=get_version())
     print(help_text)
